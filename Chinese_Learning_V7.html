@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>中文学习 V7</title>
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7/dist/hanzi-writer.min.js"></script>
+<style>
+*{box-sizing:border-box}
+:root{--red:#d71920;--bg:#f5f6f8;--card:#fff;--text:#222;--muted:#777;--line:#ddd}
+body.dark{--bg:#111827;--card:#1f2937;--text:#f9fafb;--muted:#cbd5e1;--line:#374151}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.top{height:68px;position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--card);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:10px 16px}
+.brand{font-weight:800;color:var(--red);font-size:21px;white-space:nowrap}
+.search{display:flex;flex:1;max-width:720px;margin:auto;border:2px solid var(--red);border-radius:14px;overflow:hidden;background:var(--card)}
+.search input{flex:1;border:0;outline:0;padding:12px;background:transparent;color:var(--text);font-size:16px}
+.search button{border:0;background:var(--red);color:white;padding:0 18px;cursor:pointer}
+.iconbtn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:9px 12px;cursor:pointer}
+.sidebar{position:fixed;top:68px;left:0;bottom:0;width:245px;background:var(--card);border-right:1px solid var(--line);padding:15px 12px;z-index:900;overflow:auto}
+.logo{font-size:22px;font-weight:800;padding:10px}
+.logo small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.nav{width:100%;border:0;background:transparent;color:var(--text);text-align:left;padding:13px;border-radius:11px;margin:2px 0;font-size:15px;cursor:pointer}
+.nav:hover,.nav.active{background:#fee2e2;color:#b91c1c;font-weight:700}
+.sub{display:none;padding-left:10px}
+.main{margin-left:245px;padding-top:68px}
+.hero{background:linear-gradient(135deg,#d71920,#ef4444);color:white;padding:27px}
+.hero h1{margin:0}.hero p{margin:5px 0 0}
+.content{max-width:1120px;margin:auto;padding:24px}.page{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:23px;margin-bottom:20px;box-shadow:0 5px 18px #0000000b}
+.btn{border:0;border-radius:11px;padding:10px 15px;margin:4px;cursor:pointer;font-weight:700}
+.red{background:var(--red);color:#fff}.blue{background:#2563eb;color:#fff}.gray{background:#e5e7eb;color:#222}
+body.dark .gray{background:#374151;color:#fff}
+.home{text-align:center;padding:55px 20px}.home .flag{font-size:65px}
+.lesson{font-size:21px;line-height:2}.lesson p{margin:0 0 22px}
+.pinyin,.translation{display:none;background:#ffffff10;color:var(--muted);padding:9px;border-radius:10px;font-size:15px;line-height:1.6}
+.lesson-title{text-align:center}.lesson-title .cn{font-size:42px;font-weight:800}.lesson-title .en{color:var(--muted)}
+.mic{text-align:center;background:#d7192010;padding:25px;border-radius:18px;margin-top:20px}
+.mic button{width:75px;height:75px;border:0;border-radius:50%;background:var(--red);color:#fff;font-size:29px}
+.character-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.character-card{border:2px solid var(--line);border-radius:15px;padding:14px;text-align:center;cursor:pointer}
+.character-card.selected,.character-card:hover{border-color:var(--red);background:#d7192010}
+.hanzi{font-size:49px;font-weight:800;color:var(--red)}.py{color:var(--muted)}
+.stroke{text-align:center}.selected-char{font-size:50px;color:var(--red);font-weight:800}
+#writer{width:330px;height:330px;max-width:100%;margin:18px auto;border:3px solid var(--red);border-radius:18px;background:linear-gradient(90deg,transparent 49.7%,#ddd 49.7%,#ddd 50.3%,transparent 50.3%),linear-gradient(transparent 49.7%,#ddd 49.7%,#ddd 50.3%,transparent 50.3%),var(--card)}
+.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.word{border:2px solid var(--line);border-radius:15px;padding:14px;cursor:pointer}.meaning{display:none;margin-top:9px;border-top:1px solid var(--line);padding-top:9px}.word.open .meaning{display:block}
+.progress{height:13px;background:#e5e7eb;border-radius:20px;overflow:hidden}.bar{height:100%;width:0;background:var(--red)}
+.homework-item{border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}.homework-item textarea,.homework-item input{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font-size:16px}
+.editing textarea,.editing input{outline:2px solid #2563eb}
+.board-wrap{background:#fff;border-radius:16px;overflow:hidden;border:2px solid var(--line)}
+#board{display:block;width:100%;height:520px;touch-action:none;background:#fff;cursor:crosshair}
+.board-tools{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.board-tools label{display:flex;align-items:center;gap:6px;padding:9px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.coming{text-align:center;padding:70px}.coming .emoji{font-size:70px}
+.pdfbtn{display:inline-block;text-decoration:none}
+.result{padding:14px;border:1px solid var(--line);border-radius:12px;margin-top:9px}.result strong{font-size:28px;color:var(--red)}
+.mobile{display:none}
+@media(max-width:850px){
+.brand{display:none}.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}
+.mobile{display:block;position:fixed;top:74px;left:10px;z-index:1100;border:0;background:var(--card);color:var(--text);padding:9px 12px;border-radius:10px;font-size:20px}
+.main{margin-left:0}.hero{padding-left:60px}.character-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:520px){.character-grid{grid-template-columns:repeat(2,1fr)}.content{padding:12px}.lesson{font-size:19px}#board{height:430px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">🇨🇳 中文学习</div>
+  <div class="search">
+    <input id="topSearch" placeholder="搜索中文、拼音或英文..." onkeydown="if(event.key==='Enter')searchAll()">
+    <button onclick="searchAll()">🔎</button>
+  </div>
+  <button class="iconbtn" onclick="toggleDark()">🌙</button>
+</header>
+
+<button class="mobile" onclick="toggleSidebar()">☰</button>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">中文学习<small>Chinese Learning V7</small></div>
+  <button class="nav active" onclick="showPage('home',this)">🏠 首页</button>
+  <button class="nav" onclick="showPage('lesson',this)">📖 课文</button>
+  <button class="nav" onclick="showPage('characters',this)">🔤 生字</button>
+  <button class="nav" onclick="showPage('words',this)">📚 词语</button>
+  <button class="nav" onclick="showPage('practice',this)">✏️ 练习</button>
+  <button class="nav" onclick="showPage('progress',this)">📊 学习进度</button>
+  <button class="nav" onclick="showPage('search',this)">🔎 搜索</button>
+  <button class="nav" onclick="toggleMore()">⋯ 更多</button>
+  <div class="sub" id="more">
+    <button class="nav" onclick="showPage('board',this)">🖊️ 自由画板</button>
+    <button class="nav" onclick="showPage('homework',this)">📝 作业</button>
+    <button class="nav" onclick="showPage('quizzes',this)">🧠 测验</button>
+    <button class="nav" onclick="showPage('pdf',this)">📄 PDF</button>
+    <button class="nav" onclick="showPage('coming',this)">🚧 Coming Soon</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="hero"><h1 id="title">Chinese Learning</h1><p id="subtitle">Learn Mandarin step by step</p></div>
+  <div class="content">
+
+<section id="home" class="page" style="display:block">
+  <div class="card home"><div class="flag">🇨🇳</div><h2>欢迎来到中文学习！</h2><p>Learn Chinese with reading, vocabulary, handwriting, homework and more.</p>
+  <button class="btn red" onclick="showPage('lesson')">📖 课文</button>
+  <button class="btn blue" onclick="showPage('characters')">🔤 生字</button>
+  <button class="btn gray" onclick="showPage('board')">🖊️ 自由画板</button></div>
+  <div class="card"><h2>📊 Progress</h2><p>生字 practiced: <b id="homeCount">0</b>/15</p><div class="progress"><div class="bar" id="homeBar"></div></div></div>
+</section>
+
+<section id="lesson" class="page">
+<div class="card">
+  <div class="lesson-title"><div class="cn">1　买文具</div><div class="en">Buy Stationery</div></div><br>
+  <button class="btn blue" onclick="speakLesson()">🔊 听课文</button>
+  <button class="btn gray" onclick="toggleClass('.pinyin')">👁️ 拼音</button>
+  <button class="btn gray" onclick="toggleClass('.translation')">🇺🇸 English</button>
+  <hr>
+  <div class="lesson">
+    <p>快开学了，前天我和妈妈去超市买文具。</p>
+    <div class="pinyin">Kuài kāixué le, qiántiān wǒ hé māma qù chāoshì mǎi wénjù.</div>
+    <div class="translation">School is about to start. The day before yesterday, my mom and I went to the supermarket to buy stationery.</div>
+    <p>超市里的文具可多啦，有各种各样的笔，各种颜色的练习本，还有许多漂亮的尺子、小刀和书包。</p>
+    <div class="pinyin">Chāoshì lǐ de wénjù kě duō la, yǒu gèzhǒng gèyàng de bǐ, gèzhǒng yánsè de liànxíběn, hái yǒu xǔduō piàoliang de chǐzi, xiǎodāo hé shūbāo.</div>
+    <div class="translation">There were many kinds of stationery, including pens, colorful exercise books, rulers, small knives and schoolbags.</div>
+    <p>我买了几支圆珠笔和画笔，还买了几本练习本。</p>
+    <p>快离开时，我看见一个红色的书包。</p>
+    <p>我对妈妈说：“这个书包的颜色多好看啊！妈妈，给我买一个好吗？”</p>
+    <p>妈妈说：“要是你喜欢，就给你买个吧。”</p>
+    <p>我看到书包上有一行小小的英文字——Made in China。</p>
+  </div>
+  <div class="mic"><h2>🎤 朗读</h2><button onclick="startMic()">🎤</button><p id="micStatus">Ready.</p><p id="micResult"></p></div>
+</div>
+</section>
+
+<section id="characters" class="page">
+<div class="card"><h2>🔤 生字</h2><p>Tap a character to practice its stroke order.</p><div class="character-grid" id="charGrid"></div></div>
+<div class="card stroke">
+  <h2>✍️ 笔顺</h2><div class="selected-char" id="selectedChar">超</div><div id="selectedPy">chāo</div>
+  <div id="writer"></div>
+  <button class="btn blue" onclick="playCharacter()">▶️ Play</button>
+  <button class="btn gray" onclick="resetCharacter()">↻ Reset</button>
+  <button class="btn gray" onclick="toggleOutline()">👁️ Outline</button>
+  <br><label>Speed <input id="speed" type="range" min=".5" max="2" step=".1" value="1" oninput="rebuildWriter()"></label>
+  <p id="strokeStatus">Ready.</p>
+</div>
+</section>
+
+<section id="words" class="page">
+<div class="card"><h2>📚 词语</h2><p>Tap a word to reveal its meaning.</p><div class="words" id="wordGrid"></div></div>
+</section>
+
+<section id="practice" class="page">
+<div class="card"><h2>✏️ 练习</h2><h3>“书包” means:</h3>
+<button class="btn gray" onclick="checkPractice(false)">Book</button><button class="btn gray" onclick="checkPractice(true)">Schoolbag</button><button class="btn gray" onclick="checkPractice(false)">Store</button><p id="practiceAnswer"></p></div>
+</section>
+
+<section id="progress" class="page">
+<div class="card"><h2>📊 学习进度</h2><h3><span id="progressCount">0</span>/15 生字</h3><div class="progress"><div class="bar" id="progressBar"></div></div><button class="btn red" onclick="resetProgress()">Reset</button></div>
+</section>
+
+<section id="search" class="page">
+<div class="card"><h2>🔎 Search</h2><div class="search"><input id="pageSearch" placeholder="搜索..." onkeydown="if(event.key==='Enter')runSearch()"><button onclick="runSearch()">搜索</button></div><div id="results"></div></div>
+</section>
+
+<section id="board" class="page">
+<div class="card">
+<h2>🖊️ 自由画板 Free Board</h2><p>Write or draw anywhere on the white board. It supports mouse and touchscreen.</p>
+<div class="board-tools">
+<button class="btn blue" onclick="setBoardTool('pencil')">✏️ Pencil</button>
+<button class="btn gray" onclick="setBoardTool('eraser')">🧽 Eraser</button>
+<button class="btn gray" onclick="undoBoard()">↶ Undo</button>
+<button class="btn gray" onclick="clearBoard()">🗑️ Clear</button>
+<button class="btn gray" onclick="saveBoard()">💾 Save</button>
+<label>Size <input id="brushSize" type="range" min="1" max="30" value="5"></label>
+</div>
+<div class="board-wrap"><canvas id="board"></canvas></div>
+</div>
+</section>
+
+<section id="homework" class="page">
+<div class="card">
+<h2>📝 作业 Homework</h2>
+<p>This is original practice based on the lesson.</p>
+<button class="btn blue" onclick="toggleHomeworkEdit()">✏️ Edit</button>
+<button class="btn gray" onclick="saveHomework()">💾 Save</button>
+<button class="btn gray" onclick="clearHomework()">🗑️ Clear Answers</button>
+<div id="homeworkArea">
+<div class="homework-item"><b>1. Vocabulary</b><p>Write the English meaning of <b>书包</b>.</p><input data-hw="1" placeholder="Your answer"></div>
+<div class="homework-item"><b>2. Vocabulary</b><p>Write the pinyin for <b>颜色</b>.</p><input data-hw="2" placeholder="Your answer"></div>
+<div class="homework-item"><b>3. Sentence</b><p>Make a short sentence using <b>超市</b>.</p><textarea data-hw="3" rows="3" placeholder="Write your Chinese sentence"></textarea></div>
+<div class="homework-item"><b>4. Character practice</b><p>Practice <b>超、市、各、颜、练</b> in the free board.</p><button class="btn gray" onclick="showPage('board')">🖊️ Open Free Board</button></div>
+<div class="homework-item"><b>5. Reading</b><p>Read part of the lesson aloud.</p><button class="btn blue" onclick="startMic()">🎤 Start Reading</button></div>
+</div>
+<p id="homeworkStatus"></p>
+</div>
+<div class="card"><h3>📄 Official workbook</h3><p>Open the workbook PDF in a separate tab.</p>
+<a class="btn blue pdfbtn" href="http://old.hwjyw.com/fj/jcxz/zwlxca/5/1.pdf" target="_blank" rel="noopener">↗ Open Workbook PDF</a></div>
+</section>
+
+<section id="quizzes" class="page"><div class="card coming"><div class="emoji">🧠</div><h2>测验 Quizzes</h2><p>Coming Soon</p></div></section>
+<section id="pdf" class="page"><div class="card"><h2>📄 PDF</h2><a class="btn blue pdfbtn" href="http://old.hwjyw.com/fj/jcxz/zhongwen/1/1.pdf" target="_blank" rel="noopener">↗ Open Chinese Textbook PDF</a></div></section>
+<section id="coming" class="page"><div class="card coming"><div class="emoji">🚧</div><h2>Coming Soon</h2><p>More learning tools are coming.</p></div></section>
+
+  </div>
+</main>
+
+<script>
+const chars=[
+["超","chāo","super / exceed"],["市","shì","market / city"],["各","gè","each / every"],
+["颜","yán","color / appearance"],["练","liàn","practice"],["许","xǔ","allow / many"],
+["漂","piào","beautiful"],["尺","chǐ","ruler"],["刀","dāo","knife"],
+["支","zhī","measure word / branch"],["行","xíng","go / walk"],["商","shāng","business"],
+["鞋","xié","shoes"],["品","pǐn","product / item"],["制","zhì","make / manufacture"]
+];
+const words=[
+["前天","qiántiān","the day before yesterday"],["各种","gèzhǒng","various"],["颜色","yánsè","color"],
+["练习","liànxí","practice"],["许多","xǔduō","many"],["漂亮","piàoliang","beautiful"],
+["圆珠笔","yuánzhūbǐ","ballpoint pen"],["离开","líkāi","leave"],["书包","shūbāo","schoolbag"],
+["这个","zhège","this"],["要是","yàoshi","if"],["英文","Yīngwén","English"],
+["商店","shāngdiàn","store"],["衣服","yīfu","clothes"],["日用品","rìyòngpǐn","daily necessities"],
+["制造","zhìzào","manufacture"]
+];
+let current="超", writer=null, practiced=JSON.parse(localStorage.getItem("cnPractice")||"[]"), outline=true;
+
+const titles={
+home:["Chinese Learning","Learn Mandarin step by step"],lesson:["课文","买文具"],characters:["生字","Chinese characters"],
+words:["词语","Vocabulary"],practice:["练习","Practice"],progress:["学习进度","Learning progress"],
+search:["搜索","Search"],board:["自由画板","Free Board"],homework:["作业","Homework"],
+quizzes:["测验","Quizzes"],pdf:["PDF","Chinese textbook"],coming:["Coming Soon","More features"]
+};
+
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(x=>x.style.display="none");
+ document.getElementById(id).style.display="block";
+ document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+ if(titles[id]){title.textContent=titles[id][0];subtitle.textContent=titles[id][1]}
+ if(id==="characters")setTimeout(()=>createWriter(current),50);
+ if(id==="board")setTimeout(sizeBoard,50);
+ if(innerWidth<850)sidebar.classList.remove("open");
+}
+function toggleSidebar(){sidebar.classList.toggle("open")}
+function toggleMore(){more.style.display=more.style.display==="block"?"none":"block"}
+function toggleDark(){document.body.classList.toggle("dark");localStorage.dark=document.body.classList.contains("dark")}
+if(localStorage.dark==="true")document.body.classList.add("dark");
+function toggleClass(sel){document.querySelectorAll(sel).forEach(x=>x.style.display=x.style.display==="block"?"none":"block")}
+
+function buildChars(){
+ charGrid.innerHTML="";
+ chars.forEach(c=>{
+  const d=document.createElement("div");d.className="character-card"+(c[0]===current?" selected":"");
+  d.innerHTML=`<div class="hanzi">${c[0]}</div><div class="py">${c[1]}</div>`;
+  d.onclick=()=>{document.querySelectorAll(".character-card").forEach(x=>x.classList.remove("selected"));d.classList.add("selected");current=c[0];selectedChar.textContent=c[0];selectedPy.textContent=c[1];createWriter(current)};
+  charGrid.appendChild(d);
+ });
+}
+function createWriter(ch){
+ if(!window.HanziWriter){writer=null;document.getElementById("writer").innerHTML="<p>Stroke engine could not load. Check your internet connection.</p>";return}
+ document.getElementById("writer").innerHTML="";
+ writer=HanziWriter.create("writer",ch,{width:330,height:330,padding:15,showOutline:true,showCharacter:false,strokeColor:"#d71920",outlineColor:"#999",strokeAnimationSpeed:+speed.value,delayBetweenStrokes:350,renderer:"svg"});
+}
+function rebuildWriter(){createWriter(current)}
+function playCharacter(){
+ if(!writer){createWriter(current);setTimeout(playCharacter,300);return}
+ markPractice(current);strokeStatus.textContent="✍️ Writing...";
+ writer.animateCharacter({onComplete:()=>strokeStatus.textContent="✅ 完成！"});
+}
+function resetCharacter(){if(writer)writer.hideCharacter({duration:0});strokeStatus.textContent="Ready."}
+function toggleOutline(){outline=!outline;if(writer)(outline?writer.showOutline:writer.hideOutline).call(writer,{duration:150})}
+function markPractice(c){if(!practiced.includes(c)){practiced.push(c);localStorage.cnPractice=JSON.stringify(practiced)}updateProgress()}
+function updateProgress(){let n=practiced.length;progressCount.textContent=n;homeCount.textContent=n;let p=Math.round(n/15*100);progressBar.style.width=p+"%";homeBar.style.width=p+"%"}
+function resetProgress(){practiced=[];localStorage.removeItem("cnPractice");updateProgress()}
+
+function buildWords(){
+ wordGrid.innerHTML="";
+ words.forEach(w=>{
+  let d=document.createElement("div");d.className="word";
+  d.innerHTML=`<div class="hanzi">${w[0]}</div><div class="py">${w[1]}</div><div class="meaning"><b>${w[2]}</b><br><button class="btn blue" onclick="event.stopPropagation();speak('${w[0]}')">🔊 Hear</button></div>`;
+  d.onclick=()=>d.classList.toggle("open");wordGrid.appendChild(d);
+ });
+}
+function searchAll(){let q=topSearch.value.trim();if(!q)return;showPage("search");pageSearch.value=q;runSearch()}
+function runSearch(){
+ let q=pageSearch.value.trim().toLowerCase();results.innerHTML="";if(!q)return;
+ let found=[...chars,...words].filter(x=>x[0].includes(q)||x[1].toLowerCase().includes(q)||x[2].toLowerCase().includes(q));
+ if(!found.length){results.innerHTML="<p>没有找到结果 — No results.</p>";return}
+ found.forEach(x=>{let d=document.createElement("div");d.className="result";d.innerHTML=`<strong>${x[0]}</strong><div>${x[1]}</div><div>${x[2]}</div>`;d.onclick=()=>speak(x[0]);results.appendChild(d)})
+}
+function speak(t){if(!speechSynthesis)return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;speechSynthesis.speak(u)}
+function speakLesson(){speak("快开学了，前天我和妈妈去超市买文具。超市里的文具可多啦，有各种各样的笔，各种颜色的练习本，还有许多漂亮的尺子、小刀和书包。我买了几支圆珠笔和画笔，还买了几本练习本。快离开时，我看见一个红色的书包。我对妈妈说，这个书包的颜色多好看啊！妈妈，给我买一个好吗？妈妈说，要是你喜欢，就给你买个吧。")}
+function startMic(){
+ const R=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!R){micStatus.textContent="Speech recognition is not supported in this browser.";return}
+ let r=new R();r.lang="zh-CN";r.interimResults=false;micStatus.textContent="🎤 Listening...";
+ r.onresult=e=>micResult.textContent="你说的是："+e.results[0][0].transcript;
+ r.onerror=()=>micStatus.textContent="Microphone error.";r.onend=()=>micStatus.textContent="Finished.";r.start();
+}
+function checkPractice(ok){practiceAnswer.textContent=ok?"🎉 正确！ Great job!":"❌ Try again!"}
+
+/* HOMEWORK */
+function toggleHomeworkEdit(){document.getElementById("homeworkArea").classList.toggle("editing")}
+function saveHomework(){
+ let data={};document.querySelectorAll("[data-hw]").forEach(x=>data[x.dataset.hw]=x.value);
+ localStorage.homework=JSON.stringify(data);homeworkStatus.textContent="✅ Homework saved on this device.";
+}
+function loadHomework(){
+ let data=JSON.parse(localStorage.homework||"{}");document.querySelectorAll("[data-hw]").forEach(x=>{if(data[x.dataset.hw]!==undefined)x.value=data[x.dataset.hw]})
+}
+function clearHomework(){document.querySelectorAll("[data-hw]").forEach(x=>x.value="");localStorage.removeItem("homework");homeworkStatus.textContent="Answers cleared."}
+
+/* BOARD */
+const canvas=document.getElementById("board"),ctx=canvas.getContext("2d");let drawing=false,lastX=0,lastY=0,tool="pencil",history=[];
+function sizeBoard(){
+ let r=canvas.getBoundingClientRect(),d=devicePixelRatio||1,w=Math.max(1,Math.floor(r.width*d)),h=Math.max(1,Math.floor(r.height*d));
+ if(canvas.width!==w||canvas.height!==h){let old=document.createElement("canvas");old.width=canvas.width;old.height=canvas.height;if(canvas.width&&canvas.height)old.getContext("2d").drawImage(canvas,0,0);canvas.width=w;canvas.height=h;ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);if(old.width)ctx.drawImage(old,0,0,w,h)}
+}
+function pos(e){let r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}}
+function startDraw(e){e.preventDefault();sizeBoard();let p=pos(e);drawing=true;lastX=p.x;lastY=p.y;history.push(canvas.toDataURL());}
+function moveDraw(e){if(!drawing)return;e.preventDefault();let p=pos(e);ctx.lineCap="round";ctx.lineJoin="round";ctx.lineWidth=+brushSize.value*(canvas.width/canvas.getBoundingClientRect().width);ctx.strokeStyle=tool==="eraser"?"#fff":"#111";ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(p.x,p.y);ctx.stroke();lastX=p.x;lastY=p.y}
+function endDraw(){drawing=false}
+canvas.addEventListener("pointerdown",startDraw);canvas.addEventListener("pointermove",moveDraw);canvas.addEventListener("pointerup",endDraw);canvas.addEventListener("pointercancel",endDraw);canvas.addEventListener("pointerleave",endDraw);
+function setBoardTool(t){tool=t}
+function clearBoard(){sizeBoard();ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);history=[]}
+function undoBoard(){let data=history.pop();if(!data)return;let im=new Image();im.onload=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(im,0,0,canvas.width,canvas.height)};im.src=data}
+function saveBoard(){let a=document.createElement("a");a.download="chinese-free-board.png";a.href=canvas.toDataURL("image/png");a.click()}
+window.addEventListener("resize",sizeBoard);
+
+buildChars();buildWords();updateProgress();loadHomework();setTimeout(()=>createWriter("超"),100);setTimeout(sizeBoard,100);
+</script>
+</body>
+</html>
